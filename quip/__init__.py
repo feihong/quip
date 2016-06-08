@@ -40,10 +40,10 @@ class WebRunner(object):
         else:
             return False
 
-    def run(self, port=8000):
+    def run(self, port=8000, use_plim=False):
         loop = IOLoop.current()
         send.loop = loop
-        send.sockets = init_server(self, port)
+        send.sockets = init_server(self, port, use_plim)
         # Open the web browser after waiting a second for the server to start up.
         loop.call_later(1.0, webbrowser.open, 'http://localhost:%s' % port)
         loop.start()

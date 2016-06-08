@@ -8,13 +8,14 @@ app = None
 runner = None
 
 
-def init_server(runner_, port):
+def init_server(runner_, port, use_plim):
     global app, runner
     settings = dict(
         debug=True,
         # autoreload=True,
     )
     app = Application([
+        (r'/', IndexHandler),
         (r'/start/', StartHandler),
         (r'/stop/', StopHandler),
         (r'/status/', StatusHandler),
@@ -22,10 +23,20 @@ def init_server(runner_, port):
     ], **settings)
     runner = runner_
     app.sockets = set()
+    app.use_plim = use_plim
     app.listen(port)
 
     # Return the sockets so that the runner can use them.
     return app.sockets
+
+
+class IndexHandler(RequestHandler):
+    def get(self):
+        if app.use_plim:
+            self.write(render('index.html'))
+        else:
+            with open('index.html') as fd:
+                self.write(fd.read())
 
 
 class StartHandler(RequestHandler):
@@ -33,13 +44,14 @@ class StartHandler(RequestHandler):
         if not runner.running():
             print('Starting...')
             runner.start()
-
+        self.write('ok')
 
 class StopHandler(RequestHandler):
     def get(self):
         if runner.running():
             print('Stopping...')
             runner.stop()
+        self.write('ok')
 
 
 class StatusHandler(WebSocketHandler):
@@ -59,10 +71,12 @@ class NoCacheStaticFileHandler(StaticFileHandler):
         )
         super(NoCacheStaticFileHandler, self).__init__(*args, **kwargs)
 
-    # @classmethod
-    # def get_content(cls, abspath, start=None, end=None):
-    #     print(type(abspath))
-    #     return super(NoCacheStaticFileHandler, cls).get_content(abspath, start, end)
-
     def set_extra_headers(self, path):
         self.set_header('Cache-control', 'no-cache')
+
+
+def render(path):
+    from mako.template import Template
+    import plim
+    tmpl = Template(filename=path, preprocessor=plim.preprocessor)
+    return tmpl.render()

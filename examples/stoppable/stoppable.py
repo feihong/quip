@@ -11,4 +11,4 @@ def keep_going_forever():
 
 
 runner = WebRunner(keep_going_forever)
-runner.run()
+runner.run(use_plim=True)
