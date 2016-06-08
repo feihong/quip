@@ -26,6 +26,7 @@ def init_server(runner_, port, use_plim):
         (r'/start/', StartHandler),
         (r'/stop/', StopHandler),
         (r'/status/', StatusHandler),
+        (r'.*/quipclient.py', QuipClientHandler),
         (r'/(.*)', NoCacheStaticFileHandler),
     ], **settings)
     runner = runner_
@@ -53,6 +54,7 @@ class StartHandler(RequestHandler):
             runner.start()
         self.write('ok')
 
+
 class StopHandler(RequestHandler):
     def get(self):
         if runner.running():
@@ -67,6 +69,13 @@ class StatusHandler(WebSocketHandler):
 
     def on_close(self):
         app.sockets.remove(self)
+
+
+class QuipClientHandler(RequestHandler):
+    def get(self):
+        path = here / 'quipclient.py'
+        with path.open() as fd:
+            self.write(fd.read())
 
 
 class NoCacheStaticFileHandler(StaticFileHandler):
