@@ -1,6 +1,6 @@
 import os
 import re
-from setuptools import setup
+from setuptools import setup, find_packages
 
 
 requires = [
@@ -25,8 +25,8 @@ setup(
     long_description=readme,
     author='Feihong Hsu',
     url='https://github.com/feihong/quip',
-    packages=['quip'],
-    package_dir={'quip': 'quip'},
+    packages=find_packages(),
+    package_data={'': '*.html'},
     install_requires=requires,
     license='Apache 2.0',
     zip_safe=False,
