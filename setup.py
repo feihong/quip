@@ -20,7 +20,7 @@ with open('quip/__init__.py') as fd:
     version = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]',
                         fd.read(), re.MULTILINE).group(1)
 
-with open('README.md') as fd:
+with open('README.rst') as fd:
     readme = fd.read()
 
 
@@ -30,6 +30,7 @@ setup(
     description='Simple web interface framework for command-line applications.',
     long_description=readme,
     author='Feihong Hsu',
+    author_email='feihong.hsu@gmail.com',
     url='https://github.com/feihong/quip',
     packages=find_packages(),
     package_data={'': '*.html'},
