@@ -2,10 +2,17 @@ from pathlib2 import Path
 
 from tornado.web import Application, RequestHandler, StaticFileHandler
 from tornado.websocket import WebSocketHandler
+from mako.template import Template
+from mako.lookup import TemplateLookup
+import plim
 
 
 app = None
 runner = None
+
+here = Path(__file__).parent
+template_lookup = TemplateLookup(
+    directories=[str(here)], preprocessor=plim.preprocessor)
 
 
 def init_server(runner_, port, use_plim):
@@ -76,7 +83,6 @@ class NoCacheStaticFileHandler(StaticFileHandler):
 
 
 def render(path):
-    from mako.template import Template
-    import plim
-    tmpl = Template(filename=path, preprocessor=plim.preprocessor)
+    tmpl = Template(
+        filename=path, lookup=template_lookup, preprocessor=plim.preprocessor)
     return tmpl.render()
