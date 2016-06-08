@@ -27,7 +27,7 @@ class WebRunner(object):
         self.future = None
         self.func = func
 
-    def cancel(self):
+    def stop(self):
         self.stop_event.set()
 
     def done(self):
