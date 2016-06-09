@@ -1,13 +1,11 @@
 __title__ = 'quip'
-__version__ = '0.1.2'
+__version__ = '0.1.3'
 __author__ = 'Feihong Hsu'
 __license__ = 'Apache 2.0'
 __copyright__ = 'Copyright 2016 Feihong Hsu'
 __all__ = ['WebRunner', 'send']
 
 import os
-import functools
-import inspect
 import threading
 import json
 import webbrowser
@@ -23,12 +21,13 @@ executor = ThreadPoolExecutor(2)
 
 
 class WebRunner(object):
-    def __init__(self, func, port=8000, use_plim=True):
+    def __init__(self, func, is_generator=False, port=8000, use_plim=True):
         self.port = port
         self.use_plim = use_plim
         self.stop_event = threading.Event()
         self.future = None
         self.func = func
+        self.is_generator = is_generator
 
     def stop(self):
         self.stop_event.set()
@@ -52,11 +51,11 @@ class WebRunner(object):
 
     def start(self):
         """
-        Run the generator function in a separate thread.
+        Run self.func in a separate thread.
 
         """
         self.stop_event.clear()
-        if inspect.isgeneratorfunction(self.func):
+        if self.is_generator:
             func = self._stoppable_run
         else:
             func = self.func
