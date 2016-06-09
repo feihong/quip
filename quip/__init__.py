@@ -1,5 +1,5 @@
 __title__ = 'quip'
-__version__ = '0.1.1'
+__version__ = '0.1.2'
 __author__ = 'Feihong Hsu'
 __license__ = 'Apache 2.0'
 __copyright__ = 'Copyright 2016 Feihong Hsu'
@@ -23,7 +23,9 @@ executor = ThreadPoolExecutor(2)
 
 
 class WebRunner(object):
-    def __init__(self, func):
+    def __init__(self, func, port=8000, use_plim=True):
+        self.port = port
+        self.use_plim = use_plim
         self.stop_event = threading.Event()
         self.future = None
         self.func = func
@@ -40,12 +42,12 @@ class WebRunner(object):
         else:
             return False
 
-    def run(self, port=8000, use_plim=False):
+    def run(self):
         loop = IOLoop.current()
         send.loop = loop
-        send.sockets = init_server(self, port, use_plim)
+        send.sockets = init_server(self, self.port, self.use_plim)
         # Open the web browser after waiting a second for the server to start up.
-        loop.call_later(1.0, webbrowser.open, 'http://localhost:%s' % port)
+        loop.call_later(1.0, webbrowser.open, 'http://localhost:%s' % self.port)
         loop.start()
 
     def start(self):

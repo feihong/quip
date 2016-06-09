@@ -3,8 +3,12 @@ from quip import WebRunner, send
 
 
 objects = [
-    'guten tag', 1234.567, 999, ('apples', 'oranges'), [9, 8, 7, 6],
-    {'max':  100, 'min': 45},
+    'Hello World',
+    ('Apples', 'and', 'Oranges'),
+    1234.567,
+    [9, 8, 7, 6],
+    999,
+    {'max':  100, 'min': 45, 'lat': 41.963182, 'lng': -87.684340},
 ]
 
 

@@ -1,23 +1,13 @@
-import json
-from browser.websocket import WebSocket
-from browser import document, window
+from quipclient import Client
+from browser import document
 from browser.html import P
-from browser.ajax import ajax
 
 
-def on_open(evt):
-    print('Starting...')
-    request = ajax()
-    request.open('GET', '/start/', True)
-    request.send()
+class MyClient(Client):
+    def on_object(self, obj):
+        div = document['output']
+        div <= P(repr(obj))
+        print('%r' % obj)
 
 
-def on_message(evt):
-    div = document['output']
-    div <= P(evt.data)
-    print(json.loads(evt.data))
-
-
-ws = WebSocket('ws://' + window.location.host + '/status/')
-ws.bind('open', on_open)
-ws.bind('message', on_message)
+client = MyClient()

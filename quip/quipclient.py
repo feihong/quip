@@ -9,7 +9,7 @@ class Client:
         ws = WebSocket('ws://' + window.location.host + '/status/')
         ws.bind('open', lambda e: self.on_open())
         ws.bind('close', lambda e: self.on_close())
-        ws.bind('message', lambda e: self.on_message(json.loads(e.data)))
+        ws.bind('message', self.on_message)
 
     def start(self):
         print('Starting...')
@@ -23,6 +23,14 @@ class Client:
         request.open('GET', '/stop/', True)
         request.send()
 
-    def on_open(self): pass
-    def on_close(self): pass
-    def on_message(self, obj): pass
+    def on_open(self):
+        self.start()
+
+    def on_close(self):
+        pass
+
+    def on_message(self, evt):
+        self.on_object(json.loads(evt.data))
+
+    def on_object(self, obj):
+        raise NotImplementedError
