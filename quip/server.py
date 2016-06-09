@@ -5,6 +5,7 @@ from tornado.websocket import WebSocketHandler
 from mako.template import Template
 from mako.lookup import TemplateLookup
 import plim
+import stylus
 
 
 app = None
@@ -13,6 +14,7 @@ runner = None
 here = Path(__file__).parent
 template_lookup = TemplateLookup(
     directories=[str(here)], preprocessor=plim.preprocessor)
+stylus_compiler = stylus.Stylus()
 
 
 def init_server(runner_, port, use_plim):
@@ -26,7 +28,8 @@ def init_server(runner_, port, use_plim):
         (r'/start/', StartHandler),
         (r'/stop/', StopHandler),
         (r'/status/', StatusHandler),
-        (r'.*/quipclient.py', QuipClientHandler),
+        (r'.*/quipclient.py$', QuipClientHandler),
+        (r'.*\.styl$', StylusHandler),
         (r'/(.*)', NoCacheStaticFileHandler),
     ], **settings)
     runner = runner_
@@ -69,6 +72,17 @@ class StatusHandler(WebSocketHandler):
 
     def on_close(self):
         app.sockets.remove(self)
+
+
+class StylusHandler(WebSocketHandler):
+    def get(self):
+        stylus_file = Path(self.request.path.lstrip('/'))
+        if stylus_file.exists():
+            self.set_header('Content-Type', 'text/css')
+            css = stylus_compiler.compile(stylus_file.read_text())
+            self.write(css)
+        else:
+            self.write('')
 
 
 class QuipClientHandler(RequestHandler):
