@@ -1,32 +1,22 @@
-import json
-from browser.websocket import WebSocket
 from browser import document, window
 from browser.html import SPAN
-from browser.ajax import ajax
+from quipclient import Client
 
 
-def on_open(evt):
-    print('Starting...')
-    request = ajax()
-    request.open('GET', '/start/', True)
-    request.send()
+class MyClient(Client):
+    is_first = True
+
+    def on_object(self, obj):
+        div = document['output']
+        if self.is_first:
+            text = str(obj)
+            self.is_first = False
+        else:
+            text = ', %s' % obj
+        div <= SPAN(text)
 
 
-def on_message(evt):
-    div = document['output']
-    div <= SPAN(evt.data + ', ')
-
-
-def on_click(evt):
-    print('Stopping...')
-    request = ajax()
-    request.open('GET', '/stop/', True)
-    request.send()
-
-
-ws = WebSocket('ws://' + window.location.host + '/status/')
-ws.bind('open', on_open)
-ws.bind('message', on_message)
+client = MyClient()
 
 btn = document.get(selector='button')[0]
-btn.bind('click', on_click)
+btn.bind('click', client.stop)
