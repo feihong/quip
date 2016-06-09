@@ -10,5 +10,5 @@ def keep_going_forever():
         yield
 
 
-runner = WebRunner(keep_going_forever)
+runner = WebRunner(keep_going_forever, is_generator=True)
 runner.run()
