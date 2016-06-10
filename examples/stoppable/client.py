@@ -4,16 +4,9 @@ from quipclient import Client
 
 
 class MyClient(Client):
-    is_first = True
-
     def on_object(self, obj):
         div = document['output']
-        if self.is_first:
-            text = str(obj)
-            self.is_first = False
-        else:
-            text = ', %s' % obj
-        div <= SPAN(text)
+        div <= SPAN('%s, ' % obj)
 
 
 client = MyClient()
