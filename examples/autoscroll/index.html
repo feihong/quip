@@ -1,0 +1,17 @@
+-inherit boilerplate.html
+
+-block name='title'
+  Autoscroll
+
+-block name='extrahead'
+  link rel='stylesheet' href='styles.styl'
+
+-block name='extrascript'
+  script src='https://code.jquery.com/jquery-3.0.0.min.js'
+
+header
+  h1 = title()
+  div#status
+  button Stop
+
+div#output
