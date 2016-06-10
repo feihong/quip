@@ -102,7 +102,7 @@ class NoCacheStaticFileHandler(StaticFileHandler):
         super(NoCacheStaticFileHandler, self).__init__(*args, **kwargs)
 
     def set_extra_headers(self, path):
-        self.set_header('Cache-control', 'no-cache')
+        self.set_header('Cache-control', 'no-store')
 
 
 def render(path):
