@@ -7,7 +7,10 @@ from quipclient import Client
 class MyClient(Client):
     def on_object(self, obj):
         if isinstance(obj, dict):
-            jq('#status').text('Processed %d out of %d' % (obj['value'], obj['total']))
+            value, total = obj['value'], obj['total']
+            jq('#status').text('Processed %d out of %d' % (value, total))
+            percent = float(value) / total * 100
+            jq('div.progress').animate({'width': '%d%%' % percent}, 'fast')
         else:
             p = jq('<p>').text(obj).appendTo(output)
             output.scrollTop(p.offset().top - output.offset().top + output.scrollTop())
