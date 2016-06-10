@@ -10,7 +10,8 @@ class MyClient(Client):
             value, total = obj['value'], obj['total']
             jq('#status').text('Processed %d out of %d' % (value, total))
             percent = float(value) / total * 100
-            jq('div.progress').animate({'width': '%d%%' % percent}, 'fast')
+            jq('div.progress').css('width', '%d%%' % percent)
+            # jq('div.progress').animate({'width': '%d%%' % percent}, 'fast')
         else:
             p = jq('<p>').text(obj).appendTo(output)
             output.scrollTop(p.offset().top - output.offset().top + output.scrollTop())

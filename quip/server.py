@@ -1,11 +1,11 @@
-from pathlib2 import Path
-
 from tornado.web import Application, RequestHandler, StaticFileHandler
 from tornado.websocket import WebSocketHandler
 from mako.template import Template
 from mako.lookup import TemplateLookup
 import plim
 import stylus
+
+from .compat import Path
 
 
 app = None
@@ -46,8 +46,7 @@ class IndexHandler(RequestHandler):
         if app.use_plim:
             self.write(render('index.html'))
         else:
-            with open('index.html') as fd:
-                self.write(fd.read())
+            self.write(Path('index.html').read_bytes())
 
 
 class StartHandler(RequestHandler):
@@ -88,21 +87,17 @@ class StylusHandler(WebSocketHandler):
 class QuipClientHandler(RequestHandler):
     def get(self):
         path = here / 'quipclient.py'
-        with path.open() as fd:
-            self.write(fd.read())
+        self.write(path.read_bytes())
 
 
 class NoCacheStaticFileHandler(StaticFileHandler):
     def __init__(self, *args, **kwargs):
         static_dir = Path.cwd()
-        kwargs.update(
-            path=str(static_dir.absolute()),
-            default_filename='index.html',
-        )
+        kwargs['path'] = str(static_dir.absolute())
         super(NoCacheStaticFileHandler, self).__init__(*args, **kwargs)
 
     def set_extra_headers(self, path):
-        self.set_header('Cache-control', 'no-store')
+        self.set_header('Cache-Control', 'no-store')
 
 
 def render(path):

@@ -1,4 +1,4 @@
 Quip
 ====
 
-Minimal web interface framework for command-line applications.
+Quip is a minimal web-based user interface framework Python command-line applications.

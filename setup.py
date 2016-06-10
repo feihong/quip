@@ -10,11 +10,12 @@ if sys.argv[-1] == 'publish':
 
 
 requires = [
-    'futures',
-    'pathlib2',
     'Plim',
     'tornado',
 ]
+if sys.version_info[0] == 2:
+    requires.extend(['futures', 'pathlib2'])
+
 
 with open('quip/__init__.py') as fd:
     version = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]',
@@ -27,7 +28,7 @@ with open('README.rst') as fd:
 setup(
     name='quip',
     version=version,
-    description='Simple web interface framework for command-line applications.',
+    description='Quick user interfaces for Python',
     long_description=readme,
     author='Feihong Hsu',
     author_email='feihong.hsu@gmail.com',

@@ -7,7 +7,7 @@ class MyClient(Client):
     def on_object(self, obj):
         div = document['output']
         div <= P(repr(obj))
-        print('%r' % obj)
+        print('%s => %r' % (type(obj).__name__, obj))
 
 
 client = MyClient()
