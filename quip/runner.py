@@ -5,6 +5,7 @@ from concurrent.futures import ThreadPoolExecutor
 
 from tornado.ioloop import IOLoop
 
+from .compat import Path
 from .server import init_server
 
 
@@ -12,11 +13,17 @@ executor = ThreadPoolExecutor(max_workers=1)
 
 
 class WebRunner(object):
-    def __init__(self, func, is_generator=False, port=8000, use_plim=True):
+    def __init__(self, func, is_generator=False, port=8000, use_plim=True,
+        static_file_dir=None):
         self.func = func
         self.is_generator = is_generator
         self.port = port
         self.use_plim = use_plim
+        if static_file_dir is None:
+            self.static_file_dir = Path.cwd()
+        else:
+            self.static_file_dir = Path(static_file_dir)
+
         self.stop_event = threading.Event()
         self.future = None
 
@@ -35,7 +42,8 @@ class WebRunner(object):
     def run(self):
         loop = IOLoop.current()
         send.loop = loop
-        send.sockets = init_server(self, self.port, self.use_plim)
+        send.sockets = init_server(
+            self, self.port, self.use_plim, self.static_file_dir)
         # Open the web browser after waiting a second for the server to start up.
         loop.call_later(1.0, webbrowser.open, 'http://localhost:%s' % self.port)
         loop.start()

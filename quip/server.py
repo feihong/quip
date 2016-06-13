@@ -17,7 +17,7 @@ template_lookup = TemplateLookup(
 stylus_compiler = stylus.Stylus()
 
 
-def init_server(runner_, port, use_plim):
+def init_server(runner_, port, use_plim, static_file_dir):
     global app, runner
     settings = dict(
         debug=True,
@@ -35,6 +35,7 @@ def init_server(runner_, port, use_plim):
     runner = runner_
     app.sockets = set()
     app.use_plim = use_plim
+    app.static_file_dir = static_file_dir
     app.listen(port)
 
     # Return the sockets so that the runner can use them.
@@ -43,10 +44,11 @@ def init_server(runner_, port, use_plim):
 
 class IndexHandler(RequestHandler):
     def get(self):
+        index_file = app.static_file_dir / 'index.html'
         if app.use_plim:
-            self.write(render('index.html'))
+            self.write(render(index_file))
         else:
-            self.write(Path('index.html').read_bytes())
+            self.write(index_file.read_bytes())
 
 
 class StartHandler(RequestHandler):
@@ -75,7 +77,7 @@ class StatusHandler(WebSocketHandler):
 
 class StylusHandler(WebSocketHandler):
     def get(self):
-        stylus_file = Path(self.request.path.lstrip('/'))
+        stylus_file = app.static_file_dir / self.request.path.lstrip('/')
         if stylus_file.exists():
             self.set_header('Content-Type', 'text/css')
             css = stylus_compiler.compile(stylus_file.read_text())
@@ -92,8 +94,7 @@ class QuipClientHandler(RequestHandler):
 
 class NoCacheStaticFileHandler(StaticFileHandler):
     def __init__(self, *args, **kwargs):
-        static_dir = Path.cwd()
-        kwargs['path'] = str(static_dir.absolute())
+        kwargs['path'] = str(app.static_file_dir)
         super(NoCacheStaticFileHandler, self).__init__(*args, **kwargs)
 
     def set_extra_headers(self, path):
@@ -102,5 +103,7 @@ class NoCacheStaticFileHandler(StaticFileHandler):
 
 def render(path):
     tmpl = Template(
-        filename=path, lookup=template_lookup, preprocessor=plim.preprocessor)
+        text=path.read_text(),
+        lookup=template_lookup,
+        preprocessor=plim.preprocessor)
     return tmpl.render()
