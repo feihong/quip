@@ -1,0 +1,21 @@
+-inherit boilerplate.html
+
+-block name='title'
+  Progress Bar
+
+-block name='extrahead'
+  link rel='stylesheet' href='styles.styl'
+
+-block name='extrascript'
+  script src='https://code.jquery.com/jquery-3.0.0.min.js'
+
+header
+  h1 = title()
+  div.row
+    div.percent
+      0%
+    div.progress-container
+      div.progress style='width: 0'
+  button Stop
+
+div#grid
