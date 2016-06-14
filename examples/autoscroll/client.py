@@ -9,6 +9,10 @@ class MyClient(Client):
         if obj['type'] == 'output':
             mesg = 'Item %(step)s: %(data)s' % obj
             p = jq('<p>').text(mesg).appendTo(output)
+            if len(obj['data']) > 25:
+                p.toggleClass('yellow')
+            elif len(obj['data']) > 15:
+                p.toggleClass('blue')
             output.scrollTop(p.offset().top - output.offset().top + output.scrollTop())
         elif obj['type'] == 'file':
             jq('#status').text('Currently processing %s' % obj['value'])
