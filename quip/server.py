@@ -1,9 +1,10 @@
+import subprocess
+
 from tornado.web import Application, RequestHandler, StaticFileHandler
 from tornado.websocket import WebSocketHandler
 from mako.template import Template
 from mako.lookup import TemplateLookup
 import plim
-import stylus
 
 from .compat import Path
 
@@ -14,7 +15,6 @@ runner = None
 here = Path(__file__).parent
 template_lookup = TemplateLookup(
     directories=[str(here)], preprocessor=plim.preprocessor)
-stylus_compiler = stylus.Stylus()
 
 
 def init_server(runner_, port, use_plim, static_file_dir):
@@ -29,7 +29,7 @@ def init_server(runner_, port, use_plim, static_file_dir):
         (r'/stop/', StopHandler),
         (r'/status/', StatusHandler),
         (r'.*/quipclient.py$', QuipClientHandler),
-        (r'.*\.styl$', StylusHandler),
+        (r'/(.*\.styl)$', StylusHandler),
         (r'/(.*)', NoCacheStaticFileHandler),
     ], **settings)
     runner = runner_
@@ -76,11 +76,12 @@ class StatusHandler(WebSocketHandler):
 
 
 class StylusHandler(WebSocketHandler):
-    def get(self):
-        stylus_file = app.static_file_dir / self.request.path.lstrip('/')
+    def get(self, path):
+        stylus_file = app.static_file_dir / path
         if stylus_file.exists():
             self.set_header('Content-Type', 'text/css')
-            css = stylus_compiler.compile(stylus_file.read_text())
+            cmd = ['stylus', '-p', str(stylus_file)]
+            css = subprocess.check_output(cmd)
             self.write(css)
         else:
             self.write('')
