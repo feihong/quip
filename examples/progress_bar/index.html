@@ -4,6 +4,7 @@
   Progress Bar
 
 -block name='extrahead'
+  link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/css/materialize.min.css'
   link rel='stylesheet' href='styles.styl'
 
 -block name='extrascript'
@@ -12,10 +13,9 @@
 header
   h1 = title()
   div.row
-    div.percent
-      0%
-    div.progress-container
-      div.progress style='width: 0'
+    div.percent 0%
+    div.progress-container class='grey lighten-2'
+      div.progress class='blue lighten-3' style='width: 0'
   button Stop
 
-div#grid
+div#output
