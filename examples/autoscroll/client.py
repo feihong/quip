@@ -6,15 +6,17 @@ from quipclient import Client
 
 class MyClient(Client):
     def on_object(self, obj):
-        if isinstance(obj, dict):
-            value, total = obj['value'], obj['total']
-            jq('#status').text('Processed %d out of %d' % (value, total))
-            percent = float(value) / total * 100
-            jq('div.progress').css('width', '%d%%' % percent)
-            # jq('div.progress').animate({'width': '%d%%' % percent}, 'fast')
-        else:
-            p = jq('<p>').text(obj).appendTo(output)
+        if obj['type'] == 'output':
+            mesg = 'Item %(step)s: %(data)s' % obj
+            p = jq('<p>').text(mesg).appendTo(output)
             output.scrollTop(p.offset().top - output.offset().top + output.scrollTop())
+        elif obj['type'] == 'file':
+            jq('#status').text('Currently processing %s' % obj['value'])
+        elif obj['type'] == 'progress':
+            step, total = obj['step'], obj['total']
+            percent = float(step) / total * 100
+            jq('#progress').text(
+                'Processed %d out of %d (%d%%)' % (step, total, percent))
 
 
 jq = window.jQuery
