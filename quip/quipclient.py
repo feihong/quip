@@ -5,11 +5,13 @@ from browser.ajax import ajax
 
 
 class Client:
+    auto_dispatch = False
+
     def __init__(self):
         ws = WebSocket('ws://' + window.location.host + '/status/')
-        ws.bind('open', lambda e: self.on_open())
-        ws.bind('close', lambda e: self.on_close())
-        ws.bind('message', self.on_message)
+        ws.bind('open', self.on_open)
+        ws.bind('close', self.on_close)
+        ws.bind('message', self._on_message)
 
     def start(self):
         print('Starting...')
@@ -23,14 +25,19 @@ class Client:
         request.open('GET', '/stop/', True)
         request.send()
 
-    def on_open(self):
+    def on_open(self, evt):
         self.start()
 
-    def on_close(self):
+    def on_close(self, evt):
         pass
 
-    def on_message(self, evt):
-        self.on_object(json.loads(evt.data))
+    def _on_message(self, evt):
+        obj = json.loads(evt.data)
+        if self.auto_dispatch:
+            method = getattr(self, 'on_' + obj['type'])
+            method(obj)
+        else:
+            self.on_object()
 
     def on_object(self, obj):
-        raise NotImplementedError
+        raise NotImplementedError()
