@@ -20,7 +20,9 @@ class MyClient(Client):
         output.scrollTop(p.offset().top - output.offset().top + output.scrollTop())
 
     def on_file(self, obj):
-        jq('#status').text('Currently processing %s' % obj['value'])
+        (jq('#status')
+            .text('Currently processing %s' % obj['value'])
+            .effect('highlight', 1000))
 
     def on_progress(self, obj):
         step, total = obj['step'], obj['total']
