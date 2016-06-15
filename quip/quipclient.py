@@ -37,7 +37,7 @@ class Client:
             method = getattr(self, 'on_' + obj['type'])
             method(obj)
         else:
-            self.on_object()
+            self.on_object(obj)
 
     def on_object(self, obj):
         raise NotImplementedError()

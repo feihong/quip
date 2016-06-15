@@ -41,8 +41,8 @@ class WebRunner(object):
 
     def run(self):
         loop = IOLoop.current()
-        send.loop = loop
-        send.sockets = init_server(
+        send_obj.loop = loop
+        send_obj.sockets = init_server(
             self, self.port, self.use_plim, self.static_file_dir)
         # Open the web browser after waiting a second for the server to start up.
         loop.call_later(1.0, webbrowser.open, 'http://localhost:%s' % self.port)
@@ -105,4 +105,7 @@ class SendCallable:
             socket.write_message(data)
 
 
-send = SendCallable()
+send_obj = SendCallable()
+
+def send(**kwargs):
+    send_obj(kwargs)
