@@ -1,5 +1,5 @@
 import time
-from quip import WebRunner, send
+from quip import WebRunner, send_obj
 
 
 objects = [
@@ -14,7 +14,7 @@ objects = [
 
 def hello():
     for obj in objects:
-        send(obj)
+        send_obj(obj)
         time.sleep(1)
 
 

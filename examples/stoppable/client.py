@@ -6,7 +6,7 @@ from quipclient import Client
 class MyClient(Client):
     def on_object(self, obj):
         div = document['output']
-        div <= SPAN('%s, ' % obj)
+        div <= SPAN('%d, ' % obj)
 
 
 client = MyClient()
