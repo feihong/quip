@@ -5,26 +5,31 @@ from quipclient import Client
 
 
 class MyClient(Client):
-    def on_object(self, obj):
-        if obj['type'] == 'output':
-            mesg = 'Item %(step)s: %(data)s' % obj
-            p = jq('<p>').text(mesg).appendTo(output)
-            if len(obj['data']) > 25:
-                p.toggleClass('yellow')
-            elif len(obj['data']) > 15:
-                p.toggleClass('blue')
-            output.scrollTop(p.offset().top - output.offset().top + output.scrollTop())
-        elif obj['type'] == 'file':
-            jq('#status').text('Currently processing %s' % obj['value'])
-        elif obj['type'] == 'progress':
-            step, total = obj['step'], obj['total']
-            percent = float(step) / total * 100
-            jq('#progress').text(
-                'Processed %d out of %d (%d%%)' % (step, total, percent))
+    auto_dispatch = True
+
+    def on_output(self, obj):
+        output = jq('#output')
+        mesg = 'Item %(step)s: %(data)s' % obj
+        p = jq('<p>').text(mesg).appendTo(output)
+        if len(obj['data']) > 25:
+            p.toggleClass('yellow')
+        elif len(obj['data']) > 15:
+            p.toggleClass('blue')
+
+        # Make output scroll to the bottom.
+        output.scrollTop(p.offset().top - output.offset().top + output.scrollTop())
+
+    def on_file(self, obj):
+        jq('#status').text('Currently processing %s' % obj['value'])
+
+    def on_progress(self, obj):
+        step, total = obj['step'], obj['total']
+        percent = float(step) / total * 100
+        jq('#progress').text(
+            'Processed %d out of %d (%d%%)' % (step, total, percent))
 
 
 jq = window.jQuery
-output = jq('#output')
 client = MyClient()
 
 btn = document.get(selector='button')[0]
