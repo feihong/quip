@@ -9,6 +9,7 @@
 
 -block name='extrascript'
   script src='https://code.jquery.com/jquery-3.0.0.min.js'
+  script src='https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/js/materialize.min.js'
 
 header
   h1 = title()
@@ -16,6 +17,6 @@ header
     div.percent 0%
     div.progress-container class='grey lighten-2'
       div.progress class='blue lighten-3' style='width: 0'
-  button Stop
+  button class='btn waves-effect' Stop
 
 div#output

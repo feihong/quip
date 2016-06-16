@@ -1,7 +1,6 @@
 import random
 
-from browser import document, window
-from browser.html import P
+from browser import window
 
 from quipclient import Client
 
@@ -22,7 +21,7 @@ class MyClient(Client):
         jq('div.progress').css('width', '%d%%' % percent)
 
     def on_data(self, obj):
-        div = jq('<div>').text(obj['value']).appendTo('#output')
+        div = jq('<div class="z-depth-1">').text(obj['value']).appendTo('#output')
         color = random.choice(COLORS)
         div.addClass(color)
         if color in ('yellow', 'amber', 'lime'):
@@ -34,4 +33,7 @@ class MyClient(Client):
 jq = window.jQuery
 client = MyClient()
 
-jq('button').on('click', client.stop)
+def on_click(evt):
+    client.stop()
+    jq('button').addClass('disabled')
+jq('button').on('click', on_click)
