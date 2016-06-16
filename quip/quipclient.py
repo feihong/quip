@@ -34,8 +34,11 @@ class Client:
     def _on_message(self, evt):
         obj = json.loads(evt.data)
         if self.auto_dispatch:
-            method = getattr(self, 'on_' + obj['type'])
-            method(obj)
+            method = getattr(self, 'on_' + obj['type'], None)
+            if method is None:
+                print(obj)
+            else:
+                method(obj)
         else:
             self.on_object(obj)
 
