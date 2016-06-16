@@ -74,8 +74,9 @@ class WebRunner(object):
         try:
             future.result()
         except Exception as ex:
-            print(ex)
-            send(dict(type='error', value=str(ex)))
+            import traceback
+            traceback.print_exc()
+            send(type='error', value=str(ex))
 
 
 class SendCallable:
