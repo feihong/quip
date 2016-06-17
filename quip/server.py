@@ -13,8 +13,9 @@ app = None
 runner = None
 
 here = Path(__file__).parent
+resources = here / 'resources'
 template_lookup = TemplateLookup(
-    directories=[str(here / 'resources')], preprocessor=plim.preprocessor)
+    directories=[str(resources)], preprocessor=plim.preprocessor)
 
 
 def init_server(runner_, port, use_plim, static_file_dir):
@@ -81,7 +82,7 @@ class PyJHandler(RequestHandler):
         pyj_file = app.static_file_dir / path
         if pyj_file.exists():
             self.set_header('Content-Type', 'text/javascript')
-            cmd = ['rapydscript', str(py_file), '-p', str(here)]
+            cmd = ['rapydscript', str(pyj_file), '-p', str(resources)]
             js = subprocess.check_output(cmd)
             self.write(js)
         else:
@@ -102,7 +103,7 @@ class StylusHandler(WebSocketHandler):
 
 class QuipClientHandler(RequestHandler):
     def get(self):
-        path = here / 'resources/quipclient.py'
+        path = resources / 'quipclient.py'
         self.write(path.read_bytes())
 
 

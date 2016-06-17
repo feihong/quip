@@ -1,13 +1,21 @@
+@external
+class WebSocket:
+    pass
 
 
 class Client:
     auto_dispatch = False
 
     def __init__(self):
-        ws = new WebSocket('ws://' + window.location.host + '/status/')
-        ws.onopen = self.on_open
-        ws.onclose = self.on_close
-        ws.onmessage = self._on_message
+        """
+        Instead of explicitly binding the callback methods to self, we could
+        also have used `from __python__ import bound_methods`.
+
+        """
+        ws = WebSocket('ws://' + window.location.host + '/status/')
+        ws.onopen = self.on_open.bind(self)
+        ws.onclose = self.on_close.bind(self)
+        ws.onmessage = self._on_message.bind(self)
 
     def start(self):
         print('Starting...')
@@ -18,9 +26,6 @@ class Client:
         fetch('/stop/')
 
     def on_open(self, evt):
-        print(self)
-        print(evt)
-        v'debugger'
         self.start()
 
     def on_close(self, evt):
