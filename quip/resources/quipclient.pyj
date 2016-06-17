@@ -1,0 +1,41 @@
+
+
+class Client:
+    auto_dispatch = False
+
+    def __init__(self):
+        ws = new WebSocket('ws://' + window.location.host + '/status/')
+        ws.onopen = self.on_open
+        ws.onclose = self.on_close
+        ws.onmessage = self._on_message
+
+    def start(self):
+        print('Starting...')
+        fetch('/start/')
+
+    def stop(self):
+        print('Stopping...')
+        fetch('/stop/')
+
+    def on_open(self, evt):
+        print(self)
+        print(evt)
+        v'debugger'
+        self.start()
+
+    def on_close(self, evt):
+        pass
+
+    def _on_message(self, evt):
+        obj = JSON.parse(evt.data)
+        if self.auto_dispatch:
+            method = getattr(self, 'on_' + obj['type'], None)
+            if method is None:
+                print(obj)
+            else:
+                method(obj)
+        else:
+            self.on_object(obj)
+
+    def on_object(self, obj):
+        raise NotImplementedError()

@@ -14,7 +14,7 @@ runner = None
 
 here = Path(__file__).parent
 template_lookup = TemplateLookup(
-    directories=[str(here)], preprocessor=plim.preprocessor)
+    directories=[str(here / 'resources')], preprocessor=plim.preprocessor)
 
 
 def init_server(runner_, port, use_plim, static_file_dir):
@@ -29,6 +29,7 @@ def init_server(runner_, port, use_plim, static_file_dir):
         (r'/stop/', StopHandler),
         (r'/status/', StatusHandler),
         (r'.*/quipclient.py$', QuipClientHandler),
+        (r'/(.*\.pyj)$', PyJHandler),
         (r'/(.*\.styl)$', StylusHandler),
         (r'/(.*)', NoCacheStaticFileHandler),
     ], **settings)
@@ -75,6 +76,18 @@ class StatusHandler(WebSocketHandler):
         app.sockets.remove(self)
 
 
+class PyJHandler(RequestHandler):
+    def get(self, path):
+        pyj_file = app.static_file_dir / path
+        if pyj_file.exists():
+            self.set_header('Content-Type', 'text/javascript')
+            cmd = ['rapydscript', str(py_file), '-p', str(here)]
+            js = subprocess.check_output(cmd)
+            self.write(js)
+        else:
+            self.write('')
+
+
 class StylusHandler(WebSocketHandler):
     def get(self, path):
         stylus_file = app.static_file_dir / path
@@ -89,7 +102,7 @@ class StylusHandler(WebSocketHandler):
 
 class QuipClientHandler(RequestHandler):
     def get(self):
-        path = here / 'quipclient.py'
+        path = here / 'resources/quipclient.py'
         self.write(path.read_bytes())
 
 
