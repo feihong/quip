@@ -5,14 +5,14 @@ html lang='en'
     meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'
     meta http-equiv='x-ua-compatible' content='ie=edge'
     title
-      -block name='title'
+      -block title
     link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css' integrity='sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7' crossorigin='anonymous'
-    -block name='extrahead'
+    -block extrahead
 
   body onload='brython(1)'
     = next.body()
 
-    -block name='script'
+    -block script
       script src='http://code.jquery.com/jquery-2.2.4.min.js'
       script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"
       script src='https://cdn.rawgit.com/brython-dev/brython/3.2.6/www/src/brython.js'
