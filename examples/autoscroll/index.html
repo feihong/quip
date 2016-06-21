@@ -1,19 +1,20 @@
 -inherit boilerplate.html
 
--block name='title'
+-block title
   Autoscroll
 
--block name='extrahead'
+-block extrahead
   link rel='stylesheet' href='styles.styl'
 
--block name='extrascript'
-  script src='https://code.jquery.com/jquery-3.0.0.min.js'
+-block script
+  =parent.script()
+  # Use jQuery UI for the highlight effect.
   script src='http://code.jquery.com/ui/1.11.4/jquery-ui.min.js'
 
 header
   h1 = title()
   div#status
   div#progress
-  button Stop
+  button.btn.btn-default Stop
 
 div#output
