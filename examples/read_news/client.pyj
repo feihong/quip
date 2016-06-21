@@ -1,0 +1,23 @@
+from quipclient import Client
+
+
+@external
+class SpeechSynthesisUtterance(): pass
+
+
+class MyClient(Client):
+    auto_dispatch = True
+
+    def on_title(self, obj):
+      jq('div.title').text(obj['value'])
+
+    def on_entry(self, obj):
+      title = obj['title']
+      jq('<li>').text(title).appendTo('li#output')
+      utterance = SpeechSynthesisUtterance(title)
+      synth.speak(utterance)
+
+
+jq = window.jQuery
+synth = window.speechSynthesis
+client = MyClient()

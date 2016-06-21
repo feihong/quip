@@ -1,0 +1,14 @@
+-inherit boilerplate_rapydscript.html
+
+-block name='title'
+  Read News
+
+-block name='extrahead'
+  =parent.extrahead()
+  link rel='stylesheet' href='styles.styl'
+
+div.container
+  header
+    div.title
+    button.btn.btn-default Stop
+  li#output
