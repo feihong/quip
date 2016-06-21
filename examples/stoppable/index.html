@@ -1,12 +1,13 @@
-  -inherit boilerplate.html
+-inherit boilerplate.html
 
-  -block name='title'
-    Stoppable
+-block name='title'
+  Stoppable
 
+div.container
   h1 = title()
 
   p This app will keep counting, even if you reload the page, until you hit the stop button.
 
-  button Stop
+  button.btn.btn-default Stop
 
   div#output

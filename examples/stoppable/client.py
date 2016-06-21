@@ -1,15 +1,12 @@
-from browser import document, window
-from browser.html import SPAN
+from browser import window
 from quipclient import Client
 
 
 class MyClient(Client):
     def on_object(self, obj):
-        div = document['output']
-        div <= SPAN('%d, ' % obj)
+        jq('<span>').text('%d, ' % obj).appendTo('#output')
 
 
+jq = window.jQuery
 client = MyClient()
-
-btn = document.get(selector='button')[0]
-btn.bind('click', client.stop)
+jq('button').on('click', lambda e: client.stop())
