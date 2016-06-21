@@ -3,9 +3,7 @@ import random
 from quipclient import Client
 
 
-COLORS = ['red', 'pink', 'purple', 'deep-purple', 'indigo', 'blue',
-'light-blue', 'cyan', 'teal', 'green', 'light-green', 'lime', 'yellow',
-'amber', 'orange', 'deep-orange', 'blue-grey']
+COLORS = ['success', 'info', 'warning', 'danger']
 
 
 class MyClient(Client):
@@ -22,13 +20,9 @@ class MyClient(Client):
         jq('div.progress-bar').css('width', str.format('{}%', percent))
 
     def on_data(self, obj):
-        div = jq('<div class="z-depth-1">').text(obj['value']).appendTo('#output')
+        div = jq('<div>').text(obj['value']).appendTo('#output')
         color = random.choice(COLORS)
-        div.addClass(color)
-        if color in ('yellow', 'amber', 'lime'):
-            div.addClass('black-text')
-        else:
-            div.addClass('white-text')
+        div.addClass('bg-' + color)
 
 
 jq = window.jQuery
