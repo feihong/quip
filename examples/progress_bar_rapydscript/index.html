@@ -1,23 +1,19 @@
 -inherit boilerplate_rapydscript.html
 
 -block name='title'
-  Progress Bar (Using RapydScript)
+  Progress Bar (RapydScript Version)
 
 -block name='extrahead'
-  link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/css/materialize.min.css'
+  =parent.extrahead()
   link rel='stylesheet' href='styles.styl'
-
--block name='script'
-  script src='https://code.jquery.com/jquery-3.0.0.min.js'
-  script src='https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/js/materialize.min.js'
-  script src='client.pyj'
 
 header
   h1 = title()
   div.info
     div.percent 0%
-    div.progress-container class='grey lighten-2'
-      div.progress class='blue lighten-3' style='width: 0'
-    button class='btn waves-effect' Stop
+    div.progress
+      div.progress-bar.progress-bar-info.progress-bar-striped role='progressbar' aria-valuenow='0' aria-valuemin='0' aria-valuemax='100'
+        span.sr-only 0%
+    button.btn.btn-primary Stop
 
 div#output

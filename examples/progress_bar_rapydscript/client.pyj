@@ -19,7 +19,7 @@ class MyClient(Client):
         percent = float(step) / total * 100
         percent_str = str.format('{:.0f}%', percent)
         jq('div.percent').text(percent_str)
-        jq('div.progress').css('width', percent_str)
+        jq('div.progress-bar').css('width', str.format('{}%', percent))
 
     def on_data(self, obj):
         div = jq('<div class="z-depth-1">').text(obj['value']).appendTo('#output')
