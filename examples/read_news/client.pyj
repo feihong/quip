@@ -9,15 +9,41 @@ class MyClient(Client):
     auto_dispatch = True
 
     def on_title(self, obj):
-      jq('div.title').text(obj['value'])
+        jq('div.title').text(obj['value'])
 
     def on_entry(self, obj):
-      title = obj['title']
-      jq('<li>').text(title).appendTo('li#output')
-      utterance = SpeechSynthesisUtterance(title)
-      synth.speak(utterance)
+        title = obj['title']
+        anchor = jq('<a>')
+        .attr('href', obj['url'])
+        .attr('target', '_blank')
+        .text(title)
+        li = jq('<li>').append(anchor).appendTo('li#output')
+        titles.append((title, li))
+        if not started_reading:
+            nonlocal started_reading
+            started_reading = True
+            read_title()
+
+
+def read_title():
+    if not len(titles):
+        return
+    title, li = titles.pypop()
+    print('Speaking: ' + title)
+    jq(li).addClass('bg-info')
+    utterance = SpeechSynthesisUtterance(title)
+    synth.speak(utterance)
+    if len(title):
+        utterance.onend = read_title
 
 
 jq = window.jQuery
 synth = window.speechSynthesis
+started_reading = False
+titles = []
 client = MyClient()
+
+jq('button').on('click', def():
+    titles.length = 0
+    synth.cancel()
+)
