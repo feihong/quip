@@ -7,12 +7,9 @@ class Client:
     auto_dispatch = False
 
     def __init__(self):
-        """
-        Instead of explicitly binding the callback methods to self, we could
-        also have used `from __python__ import bound_methods`.
-
-        """
-        ws = WebSocket('ws://' + window.location.host + '/status/')
+        ws = WebSocket('ws://' + window.location.host + '/messages/')
+        # Instead of explicitly binding the callback methods to self, we could
+        # also have used `from __python__ import bound_methods`.
         ws.onopen = self.on_open.bind(self)
         ws.onclose = self.on_close.bind(self)
         ws.onmessage = self._on_message.bind(self)

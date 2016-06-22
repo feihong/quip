@@ -8,7 +8,7 @@ class Client:
     auto_dispatch = False
 
     def __init__(self):
-        ws = WebSocket('ws://' + window.location.host + '/status/')
+        ws = WebSocket('ws://' + window.location.host + '/messages/')
         ws.bind('open', self.on_open)
         ws.bind('close', self.on_close)
         ws.bind('message', self._on_message)

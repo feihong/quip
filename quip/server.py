@@ -28,7 +28,7 @@ def init_server(runner_, port, use_plim, static_file_dir):
         (r'/', IndexHandler),
         (r'/start/', StartHandler),
         (r'/stop/', StopHandler),
-        (r'/status/', StatusHandler),
+        (r'/messages/', MessageHandler),
         (r'.*/quipclient.py$', QuipClientHandler),
         (r'/(.*\.pyj)$', PyJHandler),
         (r'/(.*\.styl)$', StylusHandler),
@@ -69,7 +69,7 @@ class StopHandler(RequestHandler):
         self.write('ok')
 
 
-class StatusHandler(WebSocketHandler):
+class MessageHandler(WebSocketHandler):
     def open(self):
         app.sockets.add(self)
 
