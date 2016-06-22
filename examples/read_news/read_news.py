@@ -17,6 +17,8 @@ def get_news(url):
 
     for entry in feed['entries']:
         print(entry['title'])
+        # We can't just send the entry object itself because it's not
+        # JSON-serializable.
         send(type='entry', title=entry['title'], url=entry['link'])
 
 

@@ -1,11 +1,11 @@
 import itertools
 import time
-from quip import WebRunner, send_obj
+from quip import WebRunner, send
 
 
 def keep_going_forever():
     for i in itertools.count():
-        send_obj(i)
+        send(i)
         time.sleep(1)
         yield
 

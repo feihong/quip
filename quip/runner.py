@@ -41,8 +41,8 @@ class WebRunner(object):
 
     def run(self):
         loop = IOLoop.current()
-        send_obj.loop = loop
-        send_obj.sockets = init_server(
+        send.loop = loop
+        send.sockets = init_server(
             self, self.port, self.use_plim, self.static_file_dir)
         # Open the web browser after waiting a second for the server to start up.
         loop.call_later(1.0, webbrowser.open, 'http://localhost:%s' % self.port)
@@ -89,7 +89,7 @@ class SendCallable:
         self.loop = None
         self.sockets = None
 
-    def __call__(self, obj):
+    def __call__(self, obj=None, **kwargs):
         """
         It is safe to call this method from outside the main thread that is
         running the Tornado event loop.
@@ -97,7 +97,10 @@ class SendCallable:
         """
         if not self.loop:
             return
-        data = json.dumps(obj)
+        if obj is not None:
+            data = json.dumps(obj)
+        else:
+            data = json.dumps(kwargs)
         self.loop.add_callback(self._send, data)
 
     def _send(self, data):
@@ -106,7 +109,4 @@ class SendCallable:
             socket.write_message(data)
 
 
-send_obj = SendCallable()
-
-def send(**kwargs):
-    send_obj(kwargs)
+send = SendCallable()
