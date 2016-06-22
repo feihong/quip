@@ -99,6 +99,9 @@ class SendCallable:
             return
         if obj is not None:
             data = json.dumps(obj)
+            if kwargs:
+                print('Warning: Keyword arguments to send() are ignored when '
+                      'single positional argument is given')
         else:
             data = json.dumps(kwargs)
         self.loop.add_callback(self._send, data)
