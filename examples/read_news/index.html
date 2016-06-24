@@ -1,14 +1,20 @@
 -inherit boilerplate_rapydscript.html
 
--block name='title'
+-block title
   Read News
 
--block name='extrahead'
+-block extrahead
   =parent.extrahead()
   link rel='stylesheet' href='styles.styl'
 
+-block scripts
+  =parent.scripts()
+  script src='https://cdnjs.cloudflare.com/ajax/libs/co/4.1.0/index.min.js'
+
 div.container
+  h1 Read News
+
   header
-    div.title
+    div.title ...
     button.btn.btn-default Stop
-  li#output
+  ul#output

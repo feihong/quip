@@ -2,7 +2,22 @@ from quipclient import Client
 
 
 @external
-class SpeechSynthesisUtterance(): pass
+class SpeechSynthesisUtterance: pass
+@external
+class Promise: pass
+
+
+class ListItem:
+    def __init__(self, text, url):
+        self.text = text
+        anchor = jq('<a>')
+        .attr('href', url)
+        .attr('target', '_blank')
+        .text(text)
+        self.li = jq('<li>').append(anchor).appendTo('ul#output')
+
+    def toggle_select(self):
+        self.li.toggleClass('bg-info')
 
 
 class MyClient(Client):
@@ -12,38 +27,46 @@ class MyClient(Client):
         jq('div.title').text(obj['value'])
 
     def on_entry(self, obj):
-        title = obj['title']
-        anchor = jq('<a>')
-        .attr('href', obj['url'])
-        .attr('target', '_blank')
-        .text(title)
-        li = jq('<li>').append(anchor).appendTo('li#output')
-        titles.append((title, li))
-        if not started_reading:
-            nonlocal started_reading
-            started_reading = True
-            read_title()
+        title, url = obj['title'], obj['url']
+        item = ListItem(title, url)
+        list_items.append(item)
+
+    def on_done(self, obj):
+        read_titles()
 
 
-def read_title():
-    if not len(titles):
-        return
-    title, li = titles.pypop()
-    print('Speaking: ' + title)
-    jq(li).addClass('bg-info')
-    utterance = SpeechSynthesisUtterance(title)
-    synth.speak(utterance)
-    if len(title):
-        utterance.onend = read_title
+def read_titles():
+    nonlocal running
+    running = True
+
+    co(def():
+        for i, item in enumerate(list_items):
+            if not running:
+                break
+            item.toggle_select()
+            yield speak(item.text)
+            item.toggle_select()
+
+        speak(str.format('Finished reading {} items', i+1))
+    )
+
+
+def speak(text):
+    def callback(resolve, reject):
+        utterance = SpeechSynthesisUtterance(text)
+        window.speechSynthesis.speak(utterance)
+        utterance.onend = resolve
+    return Promise(callback)
 
 
 jq = window.jQuery
 synth = window.speechSynthesis
-started_reading = False
-titles = []
+running = False
+list_items = []
 client = MyClient()
 
 jq('button').on('click', def():
-    titles.length = 0
-    synth.cancel()
+    nonlocal running
+    running = False
+    synth.cancel()    
 )
