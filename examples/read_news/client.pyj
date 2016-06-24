@@ -46,6 +46,7 @@ def read_titles():
             item.toggle_select()
             yield speak(item.text)
             item.toggle_select()
+            yield sleep(1.0)
 
         speak(str.format('Finished reading {} items', i+1))
     )
@@ -55,7 +56,15 @@ def speak(text):
     def callback(resolve, reject):
         utterance = SpeechSynthesisUtterance(text)
         window.speechSynthesis.speak(utterance)
-        utterance.onend = resolve
+        utterance.onend = def():
+            resolve()
+            print('Spoke: ' + text)
+    return Promise(callback)
+
+
+def sleep(seconds):
+    def callback(resolve, reject):
+        window.setTimeout(resolve, seconds * 1000)
     return Promise(callback)
 
 
@@ -68,5 +77,5 @@ client = MyClient()
 jq('button').on('click', def():
     nonlocal running
     running = False
-    synth.cancel()    
+    window.speechSynthesis.cancel()
 )
