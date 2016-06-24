@@ -34,7 +34,7 @@ setup(
     author_email='feihong.hsu@gmail.com',
     url='https://github.com/feihong/quip',
     packages=find_packages(),
-    package_data={'': '*.html'},
+    include_package_data=True,
     install_requires=requires,
     license='Apache 2.0',
     zip_safe=False,

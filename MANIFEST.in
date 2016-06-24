@@ -1,0 +1,8 @@
+include LICENSE
+include MANIFEST.in
+graft quip
+graft examples
+global-exclude __pycache__
+global-exclude *.py[co]
+global-exclude *.pyj-cached
+global-exclude .DS_Store
