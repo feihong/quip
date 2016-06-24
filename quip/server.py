@@ -82,7 +82,7 @@ class PyJHandler(RequestHandler):
         pyj_file = app.static_file_dir / path
         if pyj_file.exists():
             self.set_header('Content-Type', 'text/javascript')
-            cmd = ['rapydscript', str(pyj_file), '-p', str(resources)]
+            cmd = ['rapydscript', str(pyj_file), '-j', '6', '-p', str(resources)]
             js = subprocess.check_output(cmd)
             self.write(js)
         else:
